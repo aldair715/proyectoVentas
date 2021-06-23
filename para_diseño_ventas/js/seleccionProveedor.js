@@ -2,9 +2,9 @@ const doc=document;
 doc.addEventListener("DOMContentLoaded",e=>
 {
    const seleccionarDeCargo=()=>{
-    const $proveedor=d.getElementById("id_proveedor");
+    const $proveedor=doc.getElementById("id_proveedor");
     let xhr=new XMLHttpRequest();
-    const $fragment=d.createDocumentFragment();
+    const $fragment=doc.createDocumentFragment();
     xhr.open('GET','../php/procesar.php?numero=proveedor');
     xhr.onload=function(){
 
@@ -15,7 +15,7 @@ doc.addEventListener("DOMContentLoaded",e=>
             let json=JSON.parse(xhr.responseText);
             
             json.forEach(el=>{
-                let opt=d.createElement("option");
+                let opt=doc.createElement("option");
                 opt.textContent=el.empresa;
                 opt.value=el.id_proveedor;
                 

@@ -1,5 +1,15 @@
 <?php
     include("head.php");
+    include("seguridad.php");
+    if($_SESSION["nivel"]==0)
+    {
+        include("../php/encabezado1.php");
+    }
+    if($_SESSION["nivel"]==1)
+    {
+        include("../php/encabezado2.php");
+        
+    }
 ?>
 <body>
     <div class="seccion">

@@ -88,7 +88,35 @@
                     header("Location:mostrar.php?estado=5");
                 }
             break;
-            default:
+            case  6:
+                if($_POST)
+                {
+                    $usuario=$_POST["usuario"];
+                    $contraseña=$_POST["contraseña"];
+                    $contraseña1=$_POST["contraseña1"];
+                    if(strcmp($contraseña,$contraseña1)==0)
+                    {
+                        $nivel=$_POST["nivel"];
+                        $estado="ACTIVO";
+                        $contraseña=md5($contraseña);
+                        $id=$_POST["id"];
+                        $consulta=("UPDATE usuario set usuario='$usuario',pasword='$contraseña',nivel='$nivel' where id_usuario=$id");
+                        $consultaParaMostrar=("SELECT * from usuario where usuario='$usuario'");
+    
+
+                            $res=mysqli_query($conexion,$consulta);
+                            header("Location:indexUsuario.php");
+                       
+                        
+                    }
+                    else{
+                        echo "<script>
+                        alert('CONTRASEÑA NO COINCIDE');
+                        window.location.href='indexUsuario.php'</script>";
+                    }
+                }
+            break;
+             default:
             break;
         }
     }

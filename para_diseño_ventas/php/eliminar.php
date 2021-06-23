@@ -27,5 +27,13 @@
             $consulta="DELETE FROM producto where id_producto='$_id'";
             $res=mysqli_query($conexion,$consulta);
         break;
+        case 6:
+            $consulta="UPDATE usuario set estado='INACTIVO' where id_usuario='$_id' ";
+            $res=mysqli_query($conexion,$consulta);
+        break;
+        case "MOSTRAR USUARIOS INACTIVOS":
+            $consulta="DELETE FROM usuario where id_usuario='$_id'";
+            $res=mysqli_query($conexion,$consulta);
+        break;
     }
 ?>

@@ -13,6 +13,13 @@ d.addEventListener("click",(e)=>{
         let boton1=d.getElementById("boton");
        botonMostrar(boton1.value);
     }
+    if(e.target.matches("#botonInactivos"))
+    {
+        let boton1=e.target.value;
+        location.href=`../php/mostrarInactivos.php?accion=${boton1}`;
+    }
+   
     
 });
+
 
