@@ -73,18 +73,136 @@
     }
     if($numero==6)
     {
-        $empleado=$_POST["empleado"];
-        $usuario=$_POST["usuario"];
-        $contraseña=$_POST["contraseña"];
-        $nivel=$_POST["nivel"];
-        $estado=$_POST["estado"];
-        $consulta=("INSERT INTO usuario(id_empleado,usuario,pasword,nivel,estado) values ('$empleado','$usuario','$contraseña','$nivel','$estado')");
-        $res=mysqli_query($conexion,$consulta);
-        if($res)
+        if($_POST)
         {
-            echo "ola";
+            $empleado=$_POST["empleado"];
+            $usuario=$_POST["usuario"];
+            $contraseña=$_POST["contraseña"];
+            $contraseña1=$_POST["contraseña1"];
+            if(strcmp($contraseña,$contraseña1)==0)
+            {
+                $nivel=$_POST["nivel"];
+                $estado="ACTIVO";
+                $contraseña=md5($contraseña);
+                $consulta=("INSERT INTO usuario(id_empleado,usuario,pasword,nivel,estado) values ('$empleado','$usuario','$contraseña','$nivel','$estado')");
+                $consultaParaMostrar=("SELECT * from usuario where id_empleado=$empleado");
+                $res=mysqli_query($conexion,$consultaParaMostrar);
+                if(mysqli_num_rows($res)!=0)
+                {
+                    echo "<script>
+                    alert('usuario ya existe');
+                    window.location.href='indexUsuario.php';</script>";
+                }
+                else{
+                    $res=mysqli_query($conexion,$consulta);
+                    header("Location:indexUsuario.php");
+                }
+                
+            }
+            else{
+                echo "<script>
+                alert('CONTRASEÑA NO COINCIDE');
+                window.location.href='indexUsuario.php'</script>";
+            }
         }
-        header("Location:indexUsuario.php");
+        
+    }
+    if($numero==7)
+    {
+        
+        if(isset($_POST))
+        {
+            
+            $i=$_POST["longitud"];
+            $nit=$_POST["nit"];
+            $razon=$_POST["razon"];
+            $id_empleado=$_POST["id_empleado"];
+            $id_venta="";
+           
+            $call=mysqli_prepare($conexion,"CALL insertarVenta($nit, $razon, $id_empleado,@res)");
+            mysqli_stmt_execute($call);
+            $select = mysqli_query($conexion, 'SELECT @res as idventa');
+            $result = mysqli_fetch_assoc($select);
+            $id_venta=$result["idventa"];
+            mysqli_stmt_close($call);
+            
+        
+            $id_producto;
+            $cantidad=1;
+            foreach ($_POST as $clave=>$valor)
+            {       
+                    if(substr_compare("$clave","id_producto_",0,10)==0)
+                    {
+                        $id_producto="";
+                        $id_producto=$valor;
+                    }
+                    else if(substr_compare("$clave","cantidad",0,6)==0)
+                    {
+
+                        $consulta="";
+                        $consulta=("CALL insertarProducto('$id_producto', '$valor', $id_venta)");
+                        $select = mysqli_multi_query($conexion,$consulta);
+                    
+                    
+                 }       
+            }
+               
+                $vector=array();
+                for($i=0;$i<1;$i++)
+                {
+                    $vector[]="exito";
+                }
+                echo json_encode($vector);
+        }
+        
+        
+        
+    }
+    if($numero==8)
+    {
+        if(isset($_POST))
+        {
+
+            $empresa=$_POST["empresa"];
+            $id_empleado=$_POST["id_empleado"];
+            $id_compra="";
+           
+            $call=mysqli_prepare($conexion,"CALL insertarCompra( $id_empleado,@res)");
+            mysqli_stmt_execute($call);
+            $select = mysqli_query($conexion, 'SELECT @res as idcompra');
+            $result = mysqli_fetch_assoc($select);
+            $id_compra=$result["idcompra"];
+            mysqli_stmt_close($call);
+            
+        
+            $id_producto;
+            $cantidad=1;
+            foreach ($_POST as $clave=>$valor)
+            {       
+                    if(substr_compare("$clave","id_producto_",0,10)==0)
+                    {
+                        $id_producto="";
+                        $id_producto=$valor;
+                    }
+                    else if(substr_compare("$clave","cantidad",0,6)==0)
+                    {
+
+                        $consulta="";
+                        $consulta=("CALL insertarProductoCompra('$id_producto', '$valor', $id_compra)");
+                        $select = mysqli_multi_query($conexion,$consulta);
+                    
+                    
+                 }       
+            }
+    
+               
+                $vector=array();
+                for($i=0;$i<1;$i++)
+                {
+                    $vector[]="exito";
+                }
+                echo json_encode($vector);
+        }
     }
     if($numero=="cargo")
     {
@@ -98,6 +216,7 @@
          
         }
         echo json_encode($vector);
+        
         
     }
     if($numero=="proveedor")
@@ -117,7 +236,19 @@
     }
     if($numero=="empleado")
     {
-        $consulta=("SELECT id_empleado,ci from empleado");
+        $consulta=("SELECT id_empleado,ci,paterno,materno,nombre from empleado");
+        $res=mysqli_query($conexion,$consulta);
+        $vector=array();
+        while($reg=mysqli_fetch_array($res))
+        {
+            $vector[]=$reg;
+        }
+        echo json_encode($vector);
+    }
+    if($numero=="producto")
+    {
+        $consulta=("SELECT id_producto,nombreProducto,empresa,descripcion,costoVenta,costoCompra,stock from producto inner join proveedor on 
+        producto.id_proveedor=proveedor.id_proveedor");
         $res=mysqli_query($conexion,$consulta);
         $vector=array();
         while($reg=mysqli_fetch_array($res))

@@ -14,7 +14,7 @@ const seleccionCargo=()=>{
             json.forEach(el=>{
                 let option=d.createElement("option");
                 option.value=el.id_empleado;
-                option.textContent=el.ci;
+                option.textContent=el.nombre+" "+el.paterno+" "+el.materno;
                 $fragment.appendChild(option);
             });
             $empleado.appendChild($fragment);
